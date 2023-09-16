@@ -1,3 +1,3 @@
-import DrawCanvas from '@/components/DrawCanvas.vue';
+import DrawingCanvas from '@/components/DrawingCanvas.vue';
 
-export { DrawCanvas };
+export { DrawingCanvas };
