@@ -20,7 +20,6 @@
     "postcss": "^8.4.29",
     "postcss-nesting": "^12.0.1",
     "sass": "^1.67.0",
-    "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-dts": "^3.5.3",
@@ -29,5 +28,34 @@
   "files": [
     "dist",
     "src/components/"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DSobrino/vue-draw.git"
+  },
+  "keywords": [
+    "canvas",
+    "draw",
+    "drawing",
+    "paint",
+    "vue3",
+    "vue",
+    "vuejs"
+  ],
+  "main": "./dist/vue-draw.umd.cjs",
+  "module": "./dist/vue-draw.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-draw.js",
+      "require": "./dist/vue-draw.umd.cjs"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
+    }
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  }
 }
