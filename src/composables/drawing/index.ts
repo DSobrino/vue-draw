@@ -5,12 +5,21 @@ import { CanvasDrawingOptions, CanvasDrawingPoint, CursorCoords, CanvasEvent } f
 import mitt from 'mitt';
 
 export function useDrawingComponent() {
-  const { canvasRef, DrawingCanvasStroke, DrawingCanvas, renderCanvas, clearCanvas, on: onCanvas } = useDrawingCanvas();
+  const {
+    canvasRef,
+    ctxRef,
+    DrawingCanvasStroke,
+    DrawingCanvas,
+    renderCanvas,
+    clearCanvas,
+    on: onCanvas,
+  } = useDrawingCanvas();
   const { isDrawing, currentStroke, drawing, startDrawingState, stopDrawingState, addDrawingPoint } = useDrawingState();
   const { createDrawingPoint } = useDrawingUtils();
 
   let options: CanvasDrawingOptions = {
     thickness: 5,
+    background: '#ffffff',
     color: '#000000',
     lineCap: 'round',
     erase: false,
@@ -68,6 +77,14 @@ export function useDrawingComponent() {
 
   function setOptions(opts: CanvasDrawingOptions): void {
     options = { ...options, ...opts };
+
+    if (!canvasRef.value || !ctxRef.value) return;
+
+    // Color de fondo.
+    ctxRef.value.globalCompositeOperation = 'destination-over';
+    ctxRef.value.fillStyle = options.background;
+    ctxRef.value.fillRect(0, 0, canvasRef.value.width, canvasRef.value.height);
+    ctxRef.value.globalCompositeOperation = 'source-over';
   }
 
   function resetCanvas(): void {

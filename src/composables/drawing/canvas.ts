@@ -1,4 +1,4 @@
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import mitt from 'mitt';
 import { useDrawingUtils } from '@/composables/drawing/utils';
 import {
@@ -19,6 +19,7 @@ const DEFAULT_BACKGROUND_COLOR = '#ffffff';
 
 export const DEFAULT_DRAW_OPTIONS: CanvasDrawingOptions = {
   thickness: 5,
+  background: DEFAULT_BACKGROUND_COLOR,
   color: '#000000',
   lineCap: 'round',
   erase: false,
@@ -55,9 +56,8 @@ export function useDrawingCanvas() {
   function registerEvents(): void {
     unregisterEvents();
 
-    if (hasTouch()) return registerTouchEvents();
-
-    registerMouseEvents();
+    if (hasTouch()) registerTouchEvents();
+    else registerMouseEvents();
   }
 
   function unregisterEvents(): void {
@@ -126,7 +126,7 @@ export function useDrawingCanvas() {
   }
 
   function DrawingCanvasStroke(stroke: CanvasDrawingStroke): void {
-    if (!ctxRef.value) return;
+    if (!canvasRef.value || !ctxRef.value) return;
 
     const firstDrawPoint = stroke[0];
     const [firstX, firstY] = firstDrawPoint;
@@ -136,7 +136,7 @@ export function useDrawingCanvas() {
 
     for (let i = 1; i < stroke.length; i++) {
       const drawPoint: CanvasDrawingPoint = stroke[i];
-      const [x, y, thickness, color, lineCap] = drawPoint;
+      const [x, y, thickness, background, color, lineCap] = drawPoint;
 
       // Estilo del trazo.
       ctxRef.value.lineWidth = thickness || DEFAULT_DRAW_OPTIONS.thickness;
@@ -151,6 +151,7 @@ export function useDrawingCanvas() {
 
       const xc = (x + nextX) / 2;
       const yc = (y + nextY) / 2;
+
       ctxRef.value.quadraticCurveTo(x, y, xc, yc);
     }
 
@@ -207,12 +208,6 @@ export function useDrawingCanvas() {
   function renderCanvas(format = 'image/png', quality = 1): Promise<Blob> {
     return new Promise((resolve, reject) => {
       if (!canvasRef.value || !ctxRef.value) return reject('Canvas ref is null');
-
-      // Color de fondo.
-      ctxRef.value.globalCompositeOperation = 'destination-over';
-      ctxRef.value.fillStyle = DEFAULT_BACKGROUND_COLOR;
-      ctxRef.value.fillRect(0, 0, canvasRef.value.width, canvasRef.value.height);
-      ctxRef.value.globalCompositeOperation = 'source-over';
 
       canvasRef.value?.toBlob(
         (blob: Blob | null) => {

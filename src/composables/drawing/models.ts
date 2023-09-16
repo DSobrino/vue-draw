@@ -10,6 +10,7 @@ export type CanvasDrawing = CanvasDrawingStroke[];
 
 export type CanvasDrawingOptions = {
   thickness: number;
+  background: string;
   color: string;
   lineCap: CanvasLineCap;
   erase: boolean;

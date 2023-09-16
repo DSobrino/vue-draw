@@ -30,7 +30,7 @@ export function useDrawingUtils() {
   }
 
   function createDrawingPoint(coords: CursorCoords, options: CanvasDrawingOptions): CanvasDrawingPoint {
-    return [coords.x, coords.y, options.thickness, options.color, options.lineCap, options.erase];
+    return [coords.x, coords.y, options.thickness, options.background, options.color, options.lineCap, options.erase];
   }
 
   return { getCursorCoords, getMouseCoords, getTouchCoords, createDrawingPoint };
